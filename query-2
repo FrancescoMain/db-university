@@ -1,0 +1,87 @@
+1)
+SELECT 'enrolment_date' , COUNT(*)
+FROM 'students' 
+GROUP BY YEAR(enrolment_date);
+
+2) 
+SELECT 'office_address', COUNT (*)
+FROM 'teachers'
+GROUP BY 'office_address'
+
+3) 
+SELECT 'exam_id', AVG(vote) AS 'voto_medio_exam'
+FROM 'exam_student'
+GROUP BY 'exam_id';    
+
+4) 
+SELECT 'department_id', COUNT(*)
+FROM 'degrees'
+GROUP BY 'department_id';
+
+5)
+SELECT *
+FROM students
+    JOIN degrees
+        ON students.degree_id = degrees.id
+WHERE degrees.name LIKE "Corso di Laurea in Economia";
+
+6) 
+SELECT degrees.*,departments.name 
+FROM departments
+    JOIN degrees
+        ON departments.id = degrees.department_id
+WHERE departments.name LIKE "Dipartimento di Neuroscienze"
+AND degrees.level LIKE "magistrale";
+
+7)
+SELECT course.*, teacher_id
+FROM course_teacher
+    JOIN course 
+        ON course_teacher.course_id = courses.id
+WHERE teacher_id LIKE 44;
+
+8)
+SELECT students.name, students.surname, students.fiscal_code, 
+    degrees.name, degrees.level, degrees.address,degrees.email,degrees.website,
+    departments.*
+FROM students
+    JOIN degrees
+        ON students.degree_id = degrees.id
+    JOIN departments
+        ON degrees.department_id = departments.id
+ORDER BY students.name, students.surname ASC;
+
+9)
+SELECT degrees.name, courses.name, teachers.*
+FROM degrees
+    JOIN courses 
+        ON degrees.id = courses.degree_id
+    JOIN course_teacher
+       ON courses.id = course_teacher.course_id
+    JOIN teachers 
+        ON course_teacher.teacher_id = teachers.id;    
+
+10)
+SELECT DISTINCT departments.name, teachers.*
+FROM departments
+    JOIN degrees
+        ON departments.id = degrees.department_id
+    JOIN courses 
+        ON degrees.id = courses.degree_id
+    JOIN course_teacher
+        ON courses.id = course_teacher.course_id
+    JOIN teachers
+        ON course_teacher.teacher_id = teachers.id
+WHERE departments.name = "Dipartimento di Matematica";            
+
+11) 
+SELECT exam_student.student_id,students.name, students.surname, students.fiscal_code,
+    exams.course_id, courses.name,courses.period, courses.year,courses.cfu, COUNT(*) AS "tentativi"
+FROM exam_student
+    JOIN exams
+        ON exam_student.exam_id = exams.id
+    JOIN courses
+        ON exams.course_id = courses.id
+    JOIN students
+        ON exam_student.student_id = students.id
+GROUP BY exam_student.student_id, exams.course_id;
